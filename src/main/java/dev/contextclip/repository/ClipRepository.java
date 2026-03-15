@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ClipRepository {
 
-    void save (ClipEntry clipEntry);
-    List<ClipEntry> findRecent(int limit);
+    void save (ClipEntry clipEntry) throws Exception;
+    List<ClipEntry> findRecent(int limit) throws Exception;
 }
