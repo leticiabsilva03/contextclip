@@ -1,0 +1,32 @@
+plugins {
+    id 'java' // ensina o Gradle a compilar Java, transforma .java em .class
+    id 'application' // adiciona a capacidade de executar o projeto como um programa
+                    // habilita dois comandos novos: ./gradlew run e ./gradlew installDist
+}
+
+// são os equivalentes diretos do <groupId> e <version> do Maven
+group   = 'dev.contextclip'
+version = '1.0.0'
+
+repositories {
+    mavenCentral() // diz onde baixar dependências
+}
+
+dependencies {
+    // Disponível em produção E em testes
+    implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
+    implementation 'net.java.dev.jna:jna-platform:5.14.0'
+
+    //Disponível só nos testes
+    testImplementation platform('org.junit:junit-bom:5.10.0') // gerenciador de versões do JUnit, garante que todas as libs usem a mesma versão
+    testImplementation 'org.junit.jupiter:junit-jupiter' // disponível para compilar E rodar os testes
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // disponível só na execução, motor que o Gradle usa para rodar os testes, nunca importado diretamente no código
+}
+
+application {
+    mainClass = 'dev.contextclip.app.Main' // quando alguém rodar ./gradlew run, começa por essa classe
+}
+
+test {
+    useJUnitPlatform() // diz ao Gradle para usar JUnit 5
+}
