@@ -1,6 +1,7 @@
 package dev.contextclip.app;
 
 import dev.contextclip.capture.ClipboardWatcher;
+import dev.contextclip.capture.WindowsCaptor;
 import dev.contextclip.repository.DbMigration;
 import dev.contextclip.repository.SqliteRepository;
 
@@ -26,7 +27,8 @@ public class Main {
 
         // 4. cria o repository e o watcher
         var repository = new SqliteRepository(dbPath);
-        var watcher    = new ClipboardWatcher(repository);
+        var contextCaptor = new WindowsCaptor();
+        var watcher    = new ClipboardWatcher(repository, contextCaptor);
 
         // 5. inicia o watcher
         watcher.start();

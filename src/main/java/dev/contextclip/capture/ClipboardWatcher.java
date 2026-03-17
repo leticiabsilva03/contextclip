@@ -10,9 +10,11 @@ import java.time.Instant;
 public class ClipboardWatcher {
 
     private final ClipRepository repository;
+    private final ContextCaptor contextCaptor;
 
-    public ClipboardWatcher(ClipRepository repository) {
+    public ClipboardWatcher(ClipRepository repository, ContextCaptor contextCaptor) {
         this.repository = repository;
+        this.contextCaptor = contextCaptor;
     }
 
     public void start() {
@@ -26,7 +28,8 @@ public class ClipboardWatcher {
                     if (contents != null && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                         var text = (String) contents.getTransferData(DataFlavor.stringFlavor);
                         if (!text.equals(lastSeen)) {
-                            repository.save(new ClipEntry(text, "unknown", Instant.now()));
+                            var context = contextCaptor.capture();
+                            repository.save(new ClipEntry(text, context.windowTitle(), Instant.now()));
                             lastSeen = text;
                         }
                     }
