@@ -21,6 +21,7 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0') // gerenciador de versões do JUnit, garante que todas as libs usem a mesma versão
     testImplementation 'org.junit.jupiter:junit-jupiter' // disponível para compilar E rodar os testes
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // disponível só na execução, motor que o Gradle usa para rodar os testes, nunca importado diretamente no código
+    implementation 'com.github.kwhat:jnativehook:2.2.2'
 }
 
 application {

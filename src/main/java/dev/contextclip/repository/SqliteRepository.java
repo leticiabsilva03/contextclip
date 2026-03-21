@@ -44,4 +44,27 @@ public class SqliteRepository implements ClipRepository{
             return list;
         }
     }
+
+    @Override
+    public List<ClipEntry> search(String query) throws Exception {
+        try (var conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+             var ps   = conn.prepareStatement(
+                     "SELECT c.text, c.source, c.copied_at " +
+                             "FROM clips c " +
+                             "JOIN clips_fts f ON c.id = f.rowid " +
+                             "WHERE clips_fts MATCH ? " +
+                             "ORDER BY c.copied_at DESC LIMIT 50")) {
+            ps.setString(1, query);
+            var rs   = ps.executeQuery();
+            var list = new ArrayList<ClipEntry>();
+            while (rs.next()) {
+                list.add(new ClipEntry(
+                        rs.getString("text"),
+                        rs.getString("source"),
+                        Instant.parse(rs.getString("copied_at"))
+                ));
+            }
+            return list;
+        }
+    }
 }

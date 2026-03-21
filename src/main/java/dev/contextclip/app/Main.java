@@ -1,6 +1,7 @@
 package dev.contextclip.app;
 
 import dev.contextclip.capture.ClipboardWatcher;
+import dev.contextclip.capture.HotkeyManager;
 import dev.contextclip.capture.WindowsCaptor;
 import dev.contextclip.repository.DbMigration;
 import dev.contextclip.repository.SqliteRepository;
@@ -29,6 +30,8 @@ public class Main {
         var historyPopup  = new HistoryPopup(repository);
         var trayManager   = new SystemTrayManager(historyPopup);
         trayManager.init();
+        var hotkeyManager = new HotkeyManager(historyPopup);
+        hotkeyManager.register();
         var watcher    = new ClipboardWatcher(repository, contextCaptor);
 
         watcher.start();

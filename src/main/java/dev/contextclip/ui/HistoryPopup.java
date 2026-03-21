@@ -67,11 +67,11 @@ public class HistoryPopup {
     private void loadHistory(DefaultListModel<String> model, String query) {
         try {
             model.clear();
-            var entries = repository.findRecent(50);
+            var entries = query.isBlank()
+                    ? repository.findRecent(50)
+                    : repository.search(query);
             for (var entry : entries) {
-                if (query.isBlank() || entry.text().toLowerCase().contains(query.toLowerCase())) {
-                    model.addElement(entry.text());
-                }
+                model.addElement(entry.text());
             }
         } catch (Exception e) {
             System.err.println("Erro ao carregar histórico: " + e.getMessage());
