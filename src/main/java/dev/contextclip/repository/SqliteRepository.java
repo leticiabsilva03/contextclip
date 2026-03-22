@@ -27,6 +27,15 @@ public class SqliteRepository implements ClipRepository{
     }
 
     @Override
+    public void deleteOlderThan(Instant cutoff) throws Exception {
+        try (var conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+             var ps = conn.prepareStatement("DELETE FROM clips WHERE copied_at < ? AND starred = 0")) {
+            ps.setString(1, cutoff.toString());
+            ps.executeUpdate();
+        }
+    }
+
+    @Override
     public List<ClipEntry> findRecent(int limit) throws Exception {
         try (var conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
              var ps   = conn.prepareStatement(
@@ -54,7 +63,7 @@ public class SqliteRepository implements ClipRepository{
                              "JOIN clips_fts f ON c.id = f.rowid " +
                              "WHERE clips_fts MATCH ? " +
                              "ORDER BY c.copied_at DESC LIMIT 50")) {
-            ps.setString(1, query);
+            ps.setString(1, query + "*");
             var rs   = ps.executeQuery();
             var list = new ArrayList<ClipEntry>();
             while (rs.next()) {

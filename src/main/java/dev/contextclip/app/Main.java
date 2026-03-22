@@ -3,6 +3,7 @@ package dev.contextclip.app;
 import dev.contextclip.capture.ClipboardWatcher;
 import dev.contextclip.capture.HotkeyManager;
 import dev.contextclip.capture.WindowsCaptor;
+import dev.contextclip.config.AppConfig;
 import dev.contextclip.repository.DbMigration;
 import dev.contextclip.repository.SqliteRepository;
 import dev.contextclip.ui.HistoryPopup;
@@ -11,6 +12,8 @@ import dev.contextclip.ui.SystemTrayManager;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.DriverManager;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -27,6 +30,12 @@ public class Main {
 
         var repository = new SqliteRepository(dbPath);
         var contextCaptor = new WindowsCaptor();
+
+        var config = new AppConfig(folder);
+        config.load();
+        var cutoff = Instant.now().minus(config.retentionDays(), ChronoUnit.DAYS);
+        repository.deleteOlderThan(cutoff);
+
         var historyPopup  = new HistoryPopup(repository);
         var trayManager   = new SystemTrayManager(historyPopup);
         trayManager.init();
