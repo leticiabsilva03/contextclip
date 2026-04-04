@@ -31,3 +31,17 @@ application {
 test {
     useJUnitPlatform() // diz ao Gradle para usar JUnit 5
 }
+
+tasks.register('jpackage', Exec) {
+    dependsOn installDist                            // garante que o projeto foi compilado e distribuído antes de empacotar
+    commandLine 'jpackage',
+            '--input',       "build/install/contextclip/lib", // pasta com os JARs do projeto e dependências
+            '--main-jar',    "contextclip-1.0.0.jar",         // JAR principal que contém o Main
+            '--main-class',  'dev.contextclip.app.Main',      // classe de entrada do programa
+            '--name',        'ContextClip',                   // nome do app que aparece no Windows
+            '--app-version', '1.0.0',                         // versão exibida no Painel de Controle
+            '--type',        'exe',                            // tipo do instalador — exe para Windows
+            '--dest',        'build/jpackage',                 // pasta onde o instalador será gerado
+            '--win-menu',                                      // cria atalho no Menu Iniciar
+            '--win-shortcut'                                   // cria atalho na área de trabalho
+}
